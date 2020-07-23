@@ -1,0 +1,104 @@
+﻿<div v-cloak v-if="mounted" class="container" id="mainDiv">
+    <div v-if="!metamaskUnlocked" class="row" style="margin-top: 40px;">
+        <div class="col-xl-12" style="margin-bottom:40px;">
+            <div class="card border-danger mb-3">
+                <div class="card-header" style="background-color:#dc3545;">
+                    ¡Impotant!
+                </div>
+                <div class="card-body">
+                    <p v-if="!metamaskInstalled" class="card-text">
+                        You must install the <a href="https://metamask.io/">Metamask</a> extension in your web browser.
+                    </p>
+                    <p v-else-if="!metamaskUnlocked" class="card-text">
+                        You must log into metamask and allow the site to access to your accounts.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div v-if="metamaskUnlocked" class="row justify-content-md-center" style="margin-top: 30px;">
+        <div class="col col-lg-6">
+            <div class="card" style="margin-top: 5px;">
+                <div class="card-header">
+                    [Account balance]
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ account }}</h5>
+                    <p class="card-text">Balance: {{ accountBalance }} ETH</p>
+                </div>
+            </div>
+        </div>
+        <div class="col col-lg-6">
+            <div class="card" style="margin-top: 5px;">
+                <div class="card-header">
+                    [Accumulated points]
+                </div>
+                <div class="card-body" style="padding:0px;">
+                    <table class="table table-bordered" style="margin:0px">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    {{ utils.tryGetNumber(()=> refundable.points) }} Points:
+                                    {{ utils.tryGetNumber(()=> convertWeiToEther(refundable.wei)) }} ETH
+                                </td>
+                                <td style="width:10%;">
+                                    <button v-on:click="redeemLoyaltyPoints()"
+                                            v-bind:disabled="!utils.tryGet(()=> refundable.points > 0)"
+                                            type="button"
+                                            class="btn btn-success btn-sm">
+                                        Refund
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div v-if="metamaskUnlocked" class="row justify-content-md-center" style="margin-top: 20px;">
+        <div class="col col-lg-6">
+            <div class="card" style="margin-top: 5px;">
+                <div class="card-header">
+                    [Available flights]
+                </div>
+                <div class="card-body" style="padding:0px;">
+                    <table class="table table-bordered" style="margin:0px">
+                        <tbody>
+                            <tr v-cloak v-for="(item, index) in flights">
+                                <td style="width:10%;">{{ (index+1).toString().padStart(2,'0') }}</td>
+                                <td>{{ item.name }}</td>
+                                <td>Price: {{ convertWeiToEther(item.price) }} ETH </td>
+                                <td style="width:10%;">
+                                    <button v-on:click="buyFlight(index, item)" type="button" class="btn btn-success btn-sm">Purchase</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col col-lg-6">
+            <div class="card" style="margin-top: 5px;">
+                <div class="card-header">
+                    [Purchased flights]
+                </div>
+                <div class="card-body" style="padding:0px;">
+                    <table class="table table-bordered" style="margin:0px">
+                        <tbody>
+                            <tr v-cloak v-for="(item, index) in customerFlights">
+                                <td style="width:10%;">{{ (index+1).toString().padStart(2,'0') }}</td>
+                                <td>{{ item.name }}</td>
+                                <td>{{ item.date }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/contract.details.js"></script>
+<script src="~/js/contract.service.js"></script>
+<script src="~/js/main.js"></script>
